@@ -15,9 +15,9 @@ def get_html(word: str) -> str:
     :param word: The Verb
     :return:
     """
-    url = f"https://www.frag-caesar.de/lateinwoerterbuch/{word}-uebersetzung.html"
+    address = f"https://www.frag-caesar.de/lateinwoerterbuch/{word}-uebersetzung.html"
 
-    return requests.get(url).text
+    return requests.get(address).text
 
 
 def parse_verb(html: str) -> list[list]:
@@ -67,9 +67,9 @@ def parse_verb(html: str) -> list[list]:
     return forms
 
 
-def transform_verb_to_json(forms: list) -> dict:
+def transform_verb_forms_to_json(forms: list) -> dict:
     """
-    Transform to a dict and replace non-existent with None
+    Transform verb_forms to a dict
     :param forms: forms in a list
     :return: json obj
     """
@@ -131,6 +131,49 @@ def transform_verb_to_json(forms: list) -> dict:
     return document
 
 
+def transform_verb_to_json(forms: dict, information: dict):
+    document = {}
+
+    document.update(forms)
+    document.update(information)
+
+    return document
+
+
+def parse_verb_information(html: str) -> dict:
+    """
+    Parses Konjunktion, Infinitive, PPP and german translation
+    :param html: html
+    :return: formatted as dict
+    """
+
+    search = BeautifulSoup(html, "html.parser")
+    table = search.find_all("div", {"class": "table-responsive"})[0]
+
+    # get konjugation
+    konjugation = table.find_all("td", {"class": "eh"})[1].get_text()
+
+    # get translations
+    translation_field = table.find_all("td", {"class": "eh"})[3]
+    translations_split = str(translation_field).split("<br/>")
+
+    # Removes the Last BR
+    translations_split.pop()
+
+    translations = []
+    for t in translations_split:
+        part = BeautifulSoup(t, "html.parser").get_text()
+        translations.append(part)
+
+    # get infinitive
+    infinitive = table.find_all("td", {"class": "eh2"})[0].get_text()
+
+    # Get PPP
+    ppp = search.find_all("table")[29].find_all("td", {"class": "eh"})[0].get_text()
+
+    return {"translations": translations, "konjugation": konjugation, "infinitive": infinitive, "ppp": ppp}
+
+
 def rip_verb_by_name(word: str) -> None:
     """
     Extracts the entire Verb list from Frag Caesar
@@ -140,10 +183,14 @@ def rip_verb_by_name(word: str) -> None:
 
     html = get_html(word)
     try:
-        parsed = parse_verb(html)
+        parsed_forms = parse_verb(html)
+        parsed_information = parse_verb_information(html)
     except IndexError:
         raise LayoutError
-    transformed = transform_verb_to_json(parsed)
+
+    transform_forms = transform_verb_forms_to_json(parsed_forms)
+    transformed = transform_verb_to_json(transform_forms, parsed_information)
+
     add_verb(transformed)
 
 
@@ -156,8 +203,13 @@ def rip_verb_by_url(url: str) -> None:
     """
 
     html = requests.get(url).text
-    parsed = parse_verb(html)
-    transformed = transform_verb_to_json(parsed)
+
+    parsed_forms = parse_verb(html)
+    parsed_information = parse_verb_information(html)
+
+    transform_forms = transform_verb_forms_to_json(parsed_forms)
+    transformed = transform_verb_to_json(transform_forms, parsed_information)
+
     add_verb(transformed)
 
 
