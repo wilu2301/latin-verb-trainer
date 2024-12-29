@@ -1,4 +1,6 @@
 from fastapi import FastAPI
-from db import engine
+from backend.router import verb
 
 app = FastAPI()
+
+app.include_router(verb.router)
