@@ -1,5 +1,8 @@
-<script xmlns="http://www.w3.org/1999/html">
+<script>
+
+	import { confetti } from "@tsparticles/confetti";
 	import axios from 'axios';
+	import {onMount} from "svelte";
 
 	const API_URL = 'http://localhost:8000';
 
@@ -24,9 +27,18 @@
 
 	let instruction = '';
 
-	let textfield = '';
+	let textfeld = '';
+
+	let textfeld_style = {
+		color: 'black'
+	}
 
 	let hint_level = 0;
+
+
+	onMount(() => {
+		get_random_verb();
+	});
 
 	function throwError(caller = 'Unknown', message = 'Unknown error') {
 		error = true;
@@ -158,13 +170,58 @@
 	}
 
 	function check() {
-		if (textfield === correct) {
-			alert('Richtig!');
-			get_random_verb();
-		} else {
-			alert('Falsch!');
+
+		let successful = false;
+		hint_level = 0;
+		textfeld_style.color = 'black';
+
+		if (Array.isArray(correct)){
+			successful = correct.includes(textfeld);
 		}
+		else {
+			successful = textfeld === correct;
+		}
+
+		if (successful) {
+			let particles = confetti({
+				particleCount: 100,
+				spread: 70,
+				origin: { y: 0.6 },
+			});
+			setTimeout(() => {
+				particles.then((instance) => {
+					instance.destroy();
+				});
+			}, 3000); // Stop confetti after 3 seconds
+
+			get_random_verb();
+			textfeld = '';
+		} else {
+			textfeld_style.color = 'red';
+			setTimeout(() => {
+				textfeld_style.color = 'black';
+			}, 2000);
+
+		}
+
 	}
+
+	function hint(){
+		hint_level++;
+
+		if (hint_level >= 3){
+			if (Array.isArray(correct)){
+				textfeld = correct[0];
+			}
+			else {
+				textfeld = correct;
+			}
+
+			textfeld_style.color = 'green';
+		}
+
+	}
+
 </script>
 
 <div class="app">
@@ -179,8 +236,9 @@
 	<div class="verb">
 		<div class="inline">
 			<h1>
-				{verb.infinitive},
+				{verb.infinitive} {#if hint_level >= 1},{/if}
 			</h1>
+			{#if hint_level >= 1}
 			<h2>
 				{#if verb.praesens !== null}
 					{verb.praesens},
@@ -196,9 +254,10 @@
 					{verb.ppp} sum
 				{/if}
 			</h2>
+				{/if}
 		</div>
 		<p>
-			{#if verb.konjugation !== null}
+			{#if verb.konjugation !== null && hint_level >= 2}
 				{verb.konjugation}
 			{/if}
 		</p>
@@ -217,10 +276,10 @@
 	</div>
 
 	<div class="answer">
-		<button id="help">
+		<button id="help" on:click={hint}>
 			<img src="icons/help.svg" alt="help" />
 		</button>
-		<input type="text" bind:value={textfield} />
+		<input type="text" bind:value={textfeld} style = "color: {textfeld_style.color}"/>
 		<button id="check" on:click={check}>
 			<img src="icons/check.svg" alt="check" />
 		</button>

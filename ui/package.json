@@ -28,6 +28,8 @@
 		"vite": "^6.0.0"
 	},
 	"dependencies": {
-		"axios": "^1.7.9"
+		"@tsparticles/confetti": "^3.8.0",
+		"axios": "^1.7.9",
+		"tsparticles": "^3.8.0"
 	}
 }
