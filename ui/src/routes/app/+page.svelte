@@ -3,7 +3,11 @@
 	import axios from 'axios';
 	import { onMount } from 'svelte';
 
+	import Credits from './Credits.svelte';
+
 	const API_URL = 'http://localhost:8000';
+
+	let credits = false;
 
 	let error = false;
 	let verb = {
@@ -136,7 +140,7 @@
 		form.genus_verbi = genus_verbi;
 		form.persona = persona;
 
-		console.log(correct);
+		// console.log(correct);
 	}
 
 	function transform_goal() {
@@ -232,7 +236,6 @@
 	function get_hint() {
 		hint_level++;
 
-
 		if (hint_level === 1) {
 			streak.lose = 1;
 		}
@@ -256,7 +259,25 @@
 </script>
 
 <div class="app">
-	<div class="settings">
+	{#if credits}
+		<div class="overlay">
+			<Credits bind:credits />
+		</div>
+	{/if}
+
+	{#if error}
+		<div class="overlay">
+			<h1>Ein Fehler ist aufgetreten.</h1>
+			<p>Bitte versuche es später erneut!</p>
+		</div>
+	{/if}
+
+	<div
+		class="credits_icon"
+		on:click={() => {
+			credits = !credits;
+		}}
+	>
 		<img src="icons/info.svg" alt="settings" />
 	</div>
 
@@ -313,7 +334,12 @@
 			<h2>
 				{streak.value}
 				{#if streak.lose > 0}
-					<sup id="lose">{#if (streak.lose -1 <= 0)} +{:else } -{/if} {streak.lose -1}</sup>
+					<sup id="lose"
+						>{#if streak.lose - 1 <= 0}
+							+{:else}
+							-{/if}
+						{streak.lose - 1}</sup
+					>
 				{/if}
 			</h2>
 		</div>
@@ -347,7 +373,7 @@
 		overflow: hidden;
 	}
 
-	.settings {
+	.credits_icon {
 		position: fixed;
 		top: 0;
 		right: 0;
@@ -357,7 +383,7 @@
 			width: 2.2rem;
 			height: 2.2rem;
 			cursor: pointer;
-			transition: 0.1s;
+			transition: 0.3s;
 			&:hover {
 				transform: scale(1.1);
 			}
@@ -440,13 +466,26 @@
 				margin: 0 1rem;
 				cursor: pointer;
 
-				transition: 0.1s;
+				transition: 0.3s;
 				&:hover {
 					background-color: #6320ee;
 					scale: 1.1;
 				}
 			}
 		}
+	}
+
+	.overlay {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		background-color: rgba(0, 0, 0, 0.5);
+		z-index: 100;
 	}
 
 	@keyframes background {
