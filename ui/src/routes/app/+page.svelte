@@ -1,8 +1,7 @@
 <script>
-
-	import { confetti } from "@tsparticles/confetti";
+	import { confetti } from '@tsparticles/confetti';
 	import axios from 'axios';
-	import {onMount} from "svelte";
+	import { onMount } from 'svelte';
 
 	const API_URL = 'http://localhost:8000';
 
@@ -31,10 +30,22 @@
 
 	let textfeld_style = {
 		color: 'black'
-	}
+	};
 
 	let hint_level = 0;
 
+	let streak = {
+		value: 0,
+		lose: -1
+	};
+
+	/*
+	Streak system:
+	- Correct answer: +1
+	- Wrong answer: 0
+	- Hint: -1
+	- Hint solved: 0
+	 */
 
 	onMount(() => {
 		get_random_verb();
@@ -170,58 +181,78 @@
 	}
 
 	function check() {
+		let successful;
 
-		let successful = false;
 		hint_level = 0;
 		textfeld_style.color = 'black';
 
-		if (Array.isArray(correct)){
+		if (Array.isArray(correct)) {
 			successful = correct.includes(textfeld);
-		}
-		else {
+		} else {
 			successful = textfeld === correct;
 		}
 
 		if (successful) {
-			let particles = confetti({
-				particleCount: 100,
-				spread: 70,
-				origin: { y: 0.6 },
-			});
-			setTimeout(() => {
-				particles.then((instance) => {
-					instance.destroy();
+			if (streak.lose !== -1) {
+				streak.value++;
+				streak.value -= streak.lose;
+
+				if (streak.value < 0) {
+					streak.value = 0;
+				}
+
+				let particles = confetti({
+					particleCount: 100,
+					spread: 70,
+					origin: { y: 0.6 }
 				});
-			}, 3000); // Stop confetti after 3 seconds
+				setTimeout(() => {
+					particles.then((instance) => {
+						instance.destroy();
+					});
+				}, 3000); // Stop confetti after 3 seconds
+			}
 
 			get_random_verb();
+
+			// Cleanup
 			textfeld = '';
+			streak.lose = 0;
 		} else {
+			streak.value = 0;
+			streak.lose = 0;
+
 			textfeld_style.color = 'red';
 			setTimeout(() => {
 				textfeld_style.color = 'black';
 			}, 2000);
-
 		}
-
 	}
 
-	function hint(){
+	function get_hint() {
 		hint_level++;
 
-		if (hint_level >= 3){
-			if (Array.isArray(correct)){
+
+		if (hint_level === 1) {
+			streak.lose = 1;
+		}
+		if (hint_level === 2) {
+			streak.lose = 2;
+		}
+
+		if (hint_level >= 3) {
+			streak.lose = -1;
+			streak.value = 0;
+
+			if (Array.isArray(correct)) {
 				textfeld = correct[0];
-			}
-			else {
+			} else {
 				textfeld = correct;
 			}
 
 			textfeld_style.color = 'green';
 		}
-
 	}
-
 </script>
 
 <div class="app">
@@ -236,25 +267,26 @@
 	<div class="verb">
 		<div class="inline">
 			<h1>
-				{verb.infinitive} {#if hint_level >= 1},{/if}
+				{verb.infinitive}
+				{#if hint_level >= 1},{/if}
 			</h1>
 			{#if hint_level >= 1}
-			<h2>
-				{#if verb.praesens !== null}
-					{verb.praesens},
-				{/if}
-			</h2>
-			<h2>
-				{#if verb.perfekt !== null}
-					{verb.perfekt},
-				{/if}
-			</h2>
-			<h2>
-				{#if verb.ppp !== null}
-					{verb.ppp} sum
-				{/if}
-			</h2>
-				{/if}
+				<h2>
+					{#if verb.praesens !== null}
+						{verb.praesens},
+					{/if}
+				</h2>
+				<h2>
+					{#if verb.perfekt !== null}
+						{verb.perfekt},
+					{/if}
+				</h2>
+				<h2>
+					{#if verb.ppp !== null}
+						{verb.ppp} sum
+					{/if}
+				</h2>
+			{/if}
 		</div>
 		<p>
 			{#if verb.konjugation !== null && hint_level >= 2}
@@ -275,14 +307,26 @@
 		</p>
 	</div>
 
-	<div class="answer">
-		<button id="help" on:click={hint}>
-			<img src="icons/help.svg" alt="help" />
-		</button>
-		<input type="text" bind:value={textfeld} style = "color: {textfeld_style.color}"/>
-		<button id="check" on:click={check}>
-			<img src="icons/check.svg" alt="check" />
-		</button>
+	<div class="bottom">
+		<div class="streak" id="streak">
+			<img src="icons/flame.svg" alt="streak" />
+			<h2>
+				{streak.value}
+				{#if streak.lose > 0}
+					<sup id="lose">{#if (streak.lose -1 <= 0)} +{:else } -{/if} {streak.lose -1}</sup>
+				{/if}
+			</h2>
+		</div>
+
+		<div class="answer">
+			<button id="help" on:click={get_hint}>
+				<img src="icons/help.svg" alt="help" />
+			</button>
+			<input type="text" bind:value={textfeld} style="color: {textfeld_style.color}" />
+			<button id="check" on:click={check}>
+				<img src="icons/check.svg" alt="check" />
+			</button>
+		</div>
 	</div>
 </div>
 
@@ -343,37 +387,64 @@
 		}
 	}
 
-	.answer {
-		width: 90%;
-		height: 4rem;
+	.bottom {
+		width: 100%;
 		display: flex;
-
+		flex-flow: column nowrap;
+		justify-content: space-between;
 		align-items: center;
-		margin: 2rem;
-		input {
-			width: 90%;
-			height: 100%;
-			border: none;
-			border-radius: 1rem;
-			padding: 1rem;
-			font-size: 1.5rem;
-			text-align: center;
 
-			box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+		.streak {
+			display: flex;
+			align-items: center;
+			gap: 1rem;
+			position: relative;
+
+			img {
+				width: 3rem;
+				height: 3rem;
+			}
+
+			h2 {
+				font-size: 2rem;
+				#lose {
+					color: red;
+				}
+			}
 		}
-		button {
-			padding: 2rem;
-			background-color: #8075ff;
-			border: none;
-			border-radius: 1rem;
-			box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
-			margin: 0 1rem;
-			cursor: pointer;
 
-			transition: 0.1s;
-			&:hover {
-				background-color: #6320ee;
-				scale: 1.1;
+		.answer {
+			width: 90%;
+			height: 4rem;
+			display: flex;
+
+			align-items: center;
+			margin: 2rem;
+			input {
+				width: 90%;
+				height: 100%;
+				border: none;
+				border-radius: 1rem;
+				padding: 1rem;
+				font-size: 1.5rem;
+				text-align: center;
+
+				box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+			}
+			button {
+				padding: 2rem;
+				background-color: #8075ff;
+				border: none;
+				border-radius: 1rem;
+				box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+				margin: 0 1rem;
+				cursor: pointer;
+
+				transition: 0.1s;
+				&:hover {
+					background-color: #6320ee;
+					scale: 1.1;
+				}
 			}
 		}
 	}
@@ -387,6 +458,12 @@
 		}
 		100% {
 			background-color: #fbe8f0;
+		}
+	}
+
+	@keyframes pop {
+		50% {
+			transform: scale(1.2);
 		}
 	}
 
