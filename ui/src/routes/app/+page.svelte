@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 
 	import Credits from './Credits.svelte';
+	import Error from './Error.svelte';
 
 	const API_URL = 'http://localhost:8000';
 
@@ -267,8 +268,7 @@
 
 	{#if error}
 		<div class="overlay">
-			<h1>Ein Fehler ist aufgetreten.</h1>
-			<p>Bitte versuche es später erneut!</p>
+			<Error />
 		</div>
 	{/if}
 
