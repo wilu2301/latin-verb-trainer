@@ -128,7 +128,7 @@
 			if (correct == null) {
 				find_form(verb_full);
 			}
-		} catch (e) {
+		} catch {
 			console.log(
 				'Form: ' + form + ' nicht gefunden für ' + verb_full.infinitive,
 				'\nsuche neue...'
@@ -272,14 +272,14 @@
 		</div>
 	{/if}
 
-	<div
+	<button
 		class="credits_icon"
 		on:click={() => {
 			credits = !credits;
 		}}
 	>
-		<img src="icons/info.svg" alt="settings" />
-	</div>
+		<img alt="settings" src="icons/info.svg" />
+	</button>
 
 	<div class="goal-form">
 		<h2>{instruction}</h2>
@@ -378,6 +378,9 @@
 		top: 0;
 		right: 0;
 		padding: 1rem;
+
+		background: none;
+		border: none;
 
 		img {
 			width: 2.2rem;

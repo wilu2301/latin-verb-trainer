@@ -10,7 +10,7 @@
 		? '20px'
 		: '0'}); transition: opacity 0.5s ease, transform 0.5s ease;"
 >
-	<div
+	<button
 		class="close"
 		on:click={() => {
 			fadeOut = true;
@@ -18,10 +18,9 @@
 				credits = false;
 			}, 500);
 		}}
-
 	>
-		<a>Zurück</a>
-	</div>
+		Zurück
+	</button>
 
 	<h1>Bilde Lateinische Verbformen!</h1>
 	<p>
@@ -75,7 +74,7 @@
 	</footer>
 </div>
 
-<style>
+<style lang="scss">
 	body {
 		color: #211a1dff;
 		font-family: 'Arial', sans-serif;
@@ -87,15 +86,23 @@
 		margin: 0;
 	}
 
-	a {
+	a,
+	button {
 		color: #8075ffff;
 		text-decoration: none;
 		font-weight: bold;
 		transition: color 0.3s ease;
 	}
 
-	a:hover {
+	a:hover,
+	button:hover {
 		color: #6320eeff;
+	}
+
+	button {
+		background: none;
+		border: none;
+		cursor: pointer;
 	}
 
 	.credits {
@@ -193,5 +200,4 @@
 			transform: translateY(0);
 		}
 	}
-
 </style>
