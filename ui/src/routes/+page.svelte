@@ -6,7 +6,7 @@
 	import Credits from './Credits.svelte';
 	import Error from './Error.svelte';
 
-	const API_URL = 'http://localhost:8000/api';
+	let API_URL = '/api';
 
 	let credits = false;
 
@@ -53,6 +53,9 @@
 	 */
 
 	onMount(() => {
+		/* Init API */
+		API_URL = window.location.origin + '/api';
+
 		get_random_verb();
 	});
 
