@@ -1,6 +1,6 @@
 import random
 
-from backend.db.engine import db
+from ..db.engine import db
 
 
 def add_verb(content: dict) -> None:

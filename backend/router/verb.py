@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from backend.db import verb as db
+from ..db import verb as db
 
 router = APIRouter(
     prefix="/api/verb"
