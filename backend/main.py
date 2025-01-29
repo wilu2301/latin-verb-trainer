@@ -7,7 +7,7 @@ from fastapi.responses import FileResponse
 
 from .router import verb
 
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 # DEVELOPMENT ONLY
 
