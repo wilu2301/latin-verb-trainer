@@ -1,6 +1,12 @@
 # Latin Verb Trainer
 Sharpen your skills in conjugating Latin verbs and expand your knowledge of their meanings and translations!
 
+
+![Demo](https://latin.wilu.lan64.de/banner.png)
+
+
+## [Try it yourself!](https://latin.wilu.lan64.de/) 
+
 ---
 
 ## Features
