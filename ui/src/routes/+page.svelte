@@ -3,10 +3,11 @@
 	import axios from 'axios';
 	import { onMount } from 'svelte';
 
-	import Credits from './Credits.svelte';
-	import Error from './Error.svelte';
+	import Credits from './credits.svelte';
+	import Error from './error.svelte';
 
-	let API_URL = '/api';
+	let devMode = false;
+	let API_URL = 'http://localhost:8000/api';
 
 	let credits = false;
 
@@ -54,7 +55,9 @@
 
 	onMount(() => {
 		/* Init API */
-		API_URL = window.location.origin + '/api';
+		if (!devMode) {
+			API_URL = window.location.origin + '/api';
+		}
 
 		get_random_verb();
 	});

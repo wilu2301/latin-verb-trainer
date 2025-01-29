@@ -12,7 +12,6 @@ ENV MONGO_HOST=mongodb://localhost:27017
 ENV MONGO_DB=latein
 
 
-
 COPY backend /app
 WORKDIR /app
 
