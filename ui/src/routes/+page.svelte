@@ -6,7 +6,7 @@
 	import Credits from './credits.svelte';
 	import Error from './error.svelte';
 
-	let devMode = false;
+	let devMode = true;
 	let API_URL = 'http://localhost:8000/api';
 
 	let credits = false;
@@ -267,7 +267,7 @@
 
 <div class="app">
 	{#if credits}
-		<div class="overlay">
+		<div class="overlay" id="credits">
 			<Credits bind:credits />
 		</div>
 	{/if}
@@ -277,6 +277,8 @@
 			<Error />
 		</div>
 	{/if}
+
+
 
 	<button
 		class="credits_icon"
@@ -490,9 +492,8 @@
 		align-items: center;
 		position: fixed;
 		top: 0;
-		left: 0;
 		width: 100vw;
-		height: 100vh;
+		height: 100%;
 		background-color: rgba(0, 0, 0, 0.5);
 		z-index: 100;
 	}
@@ -555,5 +556,6 @@
 		.app {
 			justify-content: flex-start;
 		}
+
 	}
 </style>

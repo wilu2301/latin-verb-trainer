@@ -75,16 +75,6 @@
 </div>
 
 <style lang="scss">
-	body {
-		color: #211a1dff;
-		font-family: 'Arial', sans-serif;
-		background-color: #f5f5f5;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		height: 100vh;
-		margin: 0;
-	}
 
 	a,
 	button {
@@ -110,13 +100,14 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: space-between;
-		height: auto;
+		height: 80%;
 		max-width: 700px;
 		padding: 20px;
 		background-color: #ffffff;
 		border-radius: 20px;
 		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 		animation: fadeIn 0.8s ease-in-out;
+		overflow: auto;
 	}
 
 	.credits h1 {
