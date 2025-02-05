@@ -24,6 +24,8 @@
 		perfekt: '',
 		ppp: '',
 		translation: [],
+		translation_en: [],
+		translation_de: [],
 		konjugation: ''
 	};
 
@@ -110,8 +112,11 @@
 		verb.praesens = verb_json.praesens.active.indicative[0];
 		verb.perfekt = verb_json.perfekt.active.indicative[0];
 		verb.ppp = verb_json.ppp;
-		verb.translation = verb_json.translations;
+		verb.translation_de = verb_json.translations;
+		verb.translation_en = verb_json.translations_en;
 		verb.konjugation = verb_json.konjugation;
+
+		update_locale();
 	}
 
 	function pick_random_form() {
@@ -277,19 +282,28 @@
 	}
 
 	function get_conjugation() {
-			if($locale === 'de') {
-				return verb.konjugation;
+		if ($locale === 'de') {
+			return verb.konjugation;
+		} else {
+			if (verb.konjugation === 'konsonantische Konjugation') {
+				return 'consonant conjugation';
 			}
-			else {
-				if(verb.konjugation === "konsonantische Konjugation") {
-					return "consonant conjugation";
-				}
-				if(verb.konjugation === "Unregelmäßiges Verb") {
-					return "irregular verb";
-				}
+			if (verb.konjugation === 'Unregelmäßiges Verb') {
+				return 'irregular verb';
+			}
 
-				return verb.konjugation.replace("Konjugation", "conjugation");
-			}
+			return verb.konjugation.replace('Konjugation', 'conjugation');
+		}
+	}
+
+	function update_locale() {
+		transform_goal();
+
+		if ($locale === 'de') {
+			verb.translation = verb.translation_de;
+		} else {
+			verb.translation = verb.translation_en;
+		}
 	}
 </script>
 
@@ -306,7 +320,7 @@
 		</div>
 	{/if}
 
-	<div class="language" on:change={transform_goal}>
+	<div class="language" on:change={update_locale}>
 		<select bind:value={$locale}>
 			{#each languages as language}
 				<option value={language}>{language}</option>
@@ -356,18 +370,20 @@
 				{get_conjugation()}
 			{/if}
 		</p>
-		<hr />
+		{#if verb.translation != null}
+			<hr />
 
-		<p>
-			{#each verb.translation as translation, index}
-				{#if index === 0}
-					{translation}
-				{/if}
-				{#if index > 0 && index < 3}
-					, {translation}
-				{/if}
-			{/each}
-		</p>
+			<p>
+				{#each verb.translation as translation, index}
+					{#if index === 0}
+						{translation}
+					{/if}
+					{#if index > 0 && index < 3}
+						, {translation}
+					{/if}
+				{/each}
+			</p>
+		{/if}
 	</div>
 
 	<div class="bottom">
