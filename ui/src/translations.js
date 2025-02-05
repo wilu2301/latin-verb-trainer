@@ -33,7 +33,40 @@ export default {
 		},
 
 		credits: {
-			title: 'Bilde Lateinische Formen'
+			close: 'Zurück',
+			title: 'Bilde Lateinische Formen',
+			text:
+				'Salve, hier kannst du deine Lateinkenntnisse unter Beweis stellen!\n' +
+				'Bilde so viele Verbformen wie möglich und erhöhe deine Flamme.\n' +
+				'Für jede korrekt gebildete Verbform erhältst du 1 Flamme.\n' +
+				'Aber aufgepasst! Für jede falsch gebildete Verbform verlierst du deine Flammen.\n',
+			help: 'Übersicht der Hilfen:',
+
+			table: {
+				head: {
+					amount: 'Anzahl Hilfe',
+					action: 'Aktion',
+					flame: 'Flamme'
+				},
+				body: {
+					1: {
+						amount: '1x',
+						action: 'Zeigt die Stammformen',
+						flame: 'Keine Flamme beim Lösen'
+					},
+					2: {
+						amount: '2x',
+						action: 'Zeigt die Konjugation',
+						flame: 'Verliert eine Flamme beim richtigen Lösen'
+					},
+					3: {
+						amount: '3x',
+						action: 'Zeigt die Lösung',
+						flame: 'Verliert alle Flammen'
+					}
+				}
+			},
+			footer: 'Viel Spaß beim Üben!'
 		}
 	},
 	en: {
@@ -70,7 +103,40 @@ export default {
 		},
 
 		credits: {
-			title: 'Train your Latins skills'
+			close: 'Close',
+			title: 'Train your latin skills',
+			text:
+				'Salve, here you can show your skill in conjugating verbs.\n' +
+				'Try to build as many correct verbs as possible and increase your streak!\n' +
+				'For each correct form you will receive one flame.\n' +
+				'However, be careful, one mistake and all will be gone.\n',
+			help: 'Stuck?',
+
+			table: {
+				head: {
+					amount: 'Amount of help',
+					action: 'Action',
+					flame: 'Flame'
+				},
+				body: {
+					1: {
+						amount: '1x',
+						action: 'Shows the stem',
+						flame: 'No flame lost, no flame gained'
+					},
+					2: {
+						amount: '2x',
+						action: 'Shows the conjugation',
+						flame: 'Loses one flame when solved correctly'
+					},
+					3: {
+						amount: '3x',
+						action: 'Shows the solution',
+						flame: 'Loses all flames'
+					}
+				}
+			},
+			footer: 'Have fun practicing!'
 		}
 	}
 };
