@@ -3,8 +3,14 @@
 	import axios from 'axios';
 	import { onMount } from 'svelte';
 
+	import translations from '../translations.js';
+	import { dict, locale, t } from '../i18n.js';
+
+	$: languages = Object.keys(translations);
+	$: dict.set(translations);
+
 	import Credits from './credits.svelte';
-	import Error from './error.svelte';
+	import ErrorMessage from './errorMessage.svelte';
 
 	let devMode = true;
 	let API_URL = 'http://localhost:8000/api';
@@ -68,7 +74,7 @@
 			'%c' + 'Errare humanum est.',
 			'color: #7289DA; -webkit-text-stroke: 2px black; font-size: 72px; font-weight: bold;'
 		);
-		console.error('[Error] ' + caller + ': ' + message);
+		console.error('[ErrorMessage] ' + caller + ': ' + message);
 	}
 
 	function get_random_verb() {
@@ -146,8 +152,6 @@
 		form.modus = modus;
 		form.genus_verbi = genus_verbi;
 		form.persona = persona;
-
-		// console.log(correct);
 	}
 
 	function transform_goal() {
@@ -155,39 +159,47 @@
 
 		// Persona
 		if (form.persona < 4) {
-			instruction += form.persona + '. Person Singular ';
+			instruction +=
+				$t('instructions.persona.' + form.persona) +
+				' ' +
+				$t('instructions.nummerus.singular') +
+				' ';
 		} else {
-			instruction += form.persona - 3 + '. Person Plural ';
+			instruction +=
+				$t('instructions.persona.' + (form.persona - 3)) +
+				' ' +
+				$t('instructions.nummerus.plural') +
+				' ';
 		}
 
 		// Tempus
 		if (form.tempus === 'praesens') {
-			instruction += 'Präsens';
+			instruction += $t('instructions.tempi.praesens');
 		} else if (form.tempus === 'imperfekt') {
-			instruction += 'Imperfekt';
+			instruction += $t('instructions.tempi.imperfekt');
 		} else if (form.tempus === 'perfekt') {
-			instruction += 'Perfekt';
+			instruction += $t('instructions.tempi.perfekt');
 		} else if (form.tempus === 'plusquamperfekt') {
-			instruction += 'Plusquamperfekt';
+			instruction += $t('instructions.tempi.plusquamperfekt');
 		} else if (form.tempus === 'futur1') {
-			instruction += 'Futur 1';
+			instruction += $t('instructions.tempi.futur1');
 		} else if (form.tempus === 'futur2') {
-			instruction += 'Futur 2';
+			instruction += $t('instructions.tempi.futur2');
 		}
 
 		// Modus
 		if (form.modus === 'indicative') {
-			instruction += ' Indikativ';
+			instruction += ' ' + $t('instructions.modi.indicative');
 		} else if (form.modus === 'conjunctive') {
-			instruction += ' Konjunktiv';
+			instruction += ' ' + $t('instructions.modi.conjunctive');
 		}
 
 		// Genus Verbi
 
 		if (form.genus_verbi === 'active') {
-			instruction += ' Aktiv';
+			instruction += ' ' + $t('instructions.genus_verbi.active');
 		} else if (form.genus_verbi === 'passive') {
-			instruction += ' Passiv';
+			instruction += ' ' + $t('instructions.genus_verbi.passive');
 		}
 	}
 
@@ -274,11 +286,17 @@
 
 	{#if error}
 		<div class="overlay">
-			<Error />
+			<ErrorMessage />
 		</div>
 	{/if}
 
-
+	<div class="language" on:change={transform_goal}>
+		<select bind:value={$locale}>
+			{#each languages as language}
+				<option value={language}>{language}</option>
+			{/each}
+		</select>
+	</div>
 
 	<button
 		class="credits_icon"
@@ -356,7 +374,12 @@
 			<button id="help" on:click={get_hint}>
 				<img src="icons/help.svg" alt="help" />
 			</button>
-			<input type="text" bind:value={textfeld} style="color: {textfeld_style.color}" />
+			<input
+				type="text"
+				bind:value={textfeld}
+				style="color: {textfeld_style.color}"
+				placeholder={$t('input.placeholder')}
+			/>
 			<button id="check" on:click={check}>
 				<img src="icons/check.svg" alt="check" />
 			</button>
@@ -397,6 +420,44 @@
 			transition: 0.3s;
 			&:hover {
 				transform: scale(1.1);
+			}
+		}
+	}
+
+	.language {
+		position: fixed;
+		top: 0;
+		left: 0;
+		padding: 1rem;
+
+		select {
+			background: #8075ffff;
+			color: #f8f0fbff;
+			border: none;
+			border-radius: 1rem;
+			padding: 1rem;
+			transition:
+				background-color 0.3s ease,
+				color 0.3s ease;
+
+			&:focus {
+				background-color: #6320eeff;
+				color: #ffffff;
+			}
+		}
+
+		option {
+			background: #8075ffff;
+			color: #f8f0fbff;
+			border-radius: 1rem;
+		}
+
+		&:hover {
+			select {
+				background: #6320eeff;
+			}
+			option {
+				background: #8075ffff;
 			}
 		}
 	}
@@ -444,6 +505,7 @@
 
 			h2 {
 				font-size: 2rem;
+
 				#lose {
 					color: red;
 				}
@@ -457,6 +519,7 @@
 
 			align-items: center;
 			margin: 2rem;
+
 			input {
 				width: 90%;
 				height: 100%;
@@ -468,6 +531,7 @@
 
 				box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
 			}
+
 			button {
 				padding: 2rem;
 				background-color: #8075ff;
@@ -478,6 +542,7 @@
 				cursor: pointer;
 
 				transition: 0.3s;
+
 				&:hover {
 					background-color: #6320ee;
 					scale: 1.1;
@@ -546,6 +611,7 @@
 			button {
 				padding: 1rem;
 			}
+
 			input {
 				font-size: 1rem;
 			}
@@ -556,6 +622,5 @@
 		.app {
 			justify-content: flex-start;
 		}
-
 	}
 </style>

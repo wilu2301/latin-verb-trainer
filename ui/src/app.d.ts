@@ -2,7 +2,7 @@
 // for information about these interfaces
 declare global {
 	namespace App {
-		// interface Error {}
+		// interface ErrorMessage {}
 		// interface Locals {}
 		// interface PageData {}
 		// interface PageState {}

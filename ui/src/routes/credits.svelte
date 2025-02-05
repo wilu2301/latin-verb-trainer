@@ -1,4 +1,10 @@
 <script>
+	import translations from '../translations.js';
+	import { dict,t } from '../i18n.js';
+
+
+	$: dict.set(translations);
+
 	export let credits;
 
 	let fadeOut = false;
@@ -22,7 +28,7 @@
 		Zurück
 	</button>
 
-	<h1>Bilde Lateinische Verbformen!</h1>
+	<h1>{$t("credits.title")}</h1>
 	<p>
 		Salve, hier kannst du deine Lateinkenntnisse unter Beweis stellen!
 		<br />
