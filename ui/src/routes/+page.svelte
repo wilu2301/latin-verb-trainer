@@ -275,6 +275,22 @@
 			textfeld_style.color = 'green';
 		}
 	}
+
+	function get_conjugation() {
+			if($locale === 'de') {
+				return verb.konjugation;
+			}
+			else {
+				if(verb.konjugation === "konsonantische Konjugation") {
+					return "consonant conjugation";
+				}
+				if(verb.konjugation === "Unregelmäßiges Verb") {
+					return "irregular verb";
+				}
+
+				return verb.konjugation.replace("Konjugation", "conjugation");
+			}
+	}
 </script>
 
 <div class="app">
@@ -337,7 +353,7 @@
 		</div>
 		<p>
 			{#if verb.konjugation !== null && hint_level >= 2}
-				{verb.konjugation}
+				{get_conjugation()}
 			{/if}
 		</p>
 		<hr />
