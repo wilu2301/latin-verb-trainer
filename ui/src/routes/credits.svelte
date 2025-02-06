@@ -1,4 +1,9 @@
 <script>
+	import translations from '../translations.js';
+	import { dict, t } from '../i18n.js';
+
+	$: dict.set(translations);
+
 	export let credits;
 
 	let fadeOut = false;
@@ -19,53 +24,42 @@
 			}, 500);
 		}}
 	>
-		Zurück
+		{$t('credits.close')}
 	</button>
 
-	<h1>Bilde Lateinische Verbformen!</h1>
+	<h1>{$t('credits.title')}</h1>
 	<p>
-		Salve, hier kannst du deine Lateinkenntnisse unter Beweis stellen!
-		<br />
-		Bilde so viele Verbformen wie möglich und erhöhe deine Flamme.
-		<br /><br />
-		Für jede korrekt gebildete Verbform erhältst du 1 Flamme.
-		<br />
-		Aber aufgepasst! Für jede falsch gebildete Verbform verlierst du deine Flammen.
+		{$t('credits.text')}
 	</p>
-	<h2>Du brauchst Hilfe?</h2>
-	<p>
-		Kein Problem! Klicke auf den Button "Hilfe" und erhalte Tipps zur Bildung der Verbformen. <b
-			>Aber Achtung:</b
-		>
-	</p>
+	<h2>{$t('credits.help')}</h2>
 	<table>
 		<thead>
 			<tr>
-				<th>Anzahl Hilfe</th>
-				<th>Aktion</th>
-				<th>Flamme</th>
+				<th>{$t('credits.table.head.amount')}</th>
+				<th>{$t('credits.table.head.action')}</th>
+				<th>{$t('credits.table.head.flame')}</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
-				<td>1x</td>
-				<td>Zeigt die Stammformen</td>
-				<td>Keine Flamme beim Lösen</td>
+				<td>{$t('credits.table.body.1.amount')}</td>
+				<td>{$t('credits.table.body.1.action')}</td>
+				<td>{$t('credits.table.body.1.flame')}</td>
 			</tr>
 			<tr>
-				<td>2x</td>
-				<td>Zeigt die Konjugation</td>
-				<td>Verliert eine Flamme beim richtigen Lösen</td>
+				<td>{$t('credits.table.body.2.amount')}</td>
+				<td>{$t('credits.table.body.2.action')}</td>
+				<td>{$t('credits.table.body.2.flame')}</td>
 			</tr>
 			<tr>
-				<td>3x</td>
-				<td>Zeigt die Lösung</td>
-				<td>Verliert alle Flammen</td>
+				<td>{$t('credits.table.body.3.amount')}</td>
+				<td>{$t('credits.table.body.3.action')}</td>
+				<td>{$t('credits.table.body.3.flame')}</td>
 			</tr>
 		</tbody>
 	</table>
 
-	<h2>Worauf wartest du noch?</h2>
+	<h2>{$t('credits.footer')}</h2>
 
 	<footer class="footer">
 		<p>Made with</p>
@@ -75,7 +69,6 @@
 </div>
 
 <style lang="scss">
-
 	a,
 	button {
 		color: #8075ffff;
