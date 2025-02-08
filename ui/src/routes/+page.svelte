@@ -320,22 +320,24 @@
 		</div>
 	{/if}
 
-	<div class="language" on:change={update_locale}>
-		<select bind:value={$locale}>
-			{#each languages as language}
-				<option value={language}>{language}</option>
-			{/each}
-		</select>
-	</div>
+	<div class="head">
+		<div class="language" on:change={update_locale}>
+			<select bind:value={$locale}>
+				{#each languages as language}
+					<option value={language}>{language}</option>
+				{/each}
+			</select>
+		</div>
 
-	<button
-		class="credits_icon"
-		on:click={() => {
-			credits = !credits;
-		}}
-	>
-		<img alt="settings" src="icons/info.svg" />
-	</button>
+		<button
+			class="credits_icon"
+			on:click={() => {
+				credits = !credits;
+			}}
+		>
+			<img alt="credits" src="icons/info.svg" />
+		</button>
+	</div>
 
 	<div class="goal-form">
 		<h2>{instruction}</h2>
@@ -436,10 +438,14 @@
 		overflow: hidden;
 	}
 
+	.head {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+	}
+
 	.credits_icon {
-		position: fixed;
-		top: 0;
-		right: 0;
 		padding: 1rem;
 
 		background: none;
@@ -457,9 +463,6 @@
 	}
 
 	.language {
-		position: fixed;
-		top: 0;
-		left: 0;
 		padding: 1rem;
 
 		select {
@@ -640,10 +643,6 @@
 			margin: 1rem;
 		}
 		.answer {
-			button {
-				padding: 1rem;
-			}
-
 			input {
 				font-size: 1rem;
 			}
@@ -653,6 +652,10 @@
 	@media screen and (max-height: 800px) {
 		.app {
 			justify-content: flex-start;
+			gap: 0;
+			& {
+				overflow-y: scroll;
+			}
 		}
 	}
 </style>
